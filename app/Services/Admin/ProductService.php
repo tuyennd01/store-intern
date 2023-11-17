@@ -24,7 +24,7 @@ class ProductService extends Service
     public function getListProducts(): Collection|array
     {
         return Product::query()
-            ->select(['id', 'category_id', 'supplier_id',  'image', 'name', 'description', 'content', 'price', 'status'])
+            ->select(['id', 'category_id', 'supplier_id', 'image', 'name', 'description', 'content', 'price', 'status'])
             ->with('category', 'supplier')
             ->get();
     }
@@ -37,7 +37,14 @@ class ProductService extends Service
     public function store($data)
     {
         $data['image'] = FileService::getInstance()->uploadFile($data);
-        Product::query()->create(['category_id' => $data['category_id'], 'supplier_id' => $data['supplier_id'], 'image' => $data['image'], 'name' => $data['name_product'], 'description' => $data['description'], 'content' => $data['content'], 'price' => $data['price']]);
+        Product::query()->create(['category_id'    => $data['category_id'],
+                                  'supplier_id'    => $data['supplier_id'],
+                                  'image'          => $data['image'],
+                                  'name'           => $data['name_product'],
+                                  'description'    => $data['description'],
+                                  'content'        => $data['content'],
+                                  'price'          => $data['price']
+        ]);
     }
 
     /**
@@ -50,6 +57,7 @@ class ProductService extends Service
         $data['image'] = FileService::getInstance()->uploadFile($data);
         ProductVariation::query()->create(['product_id' => $id, 'color_id' => $data['color_id'], 'size_id' => $data['size_id'], 'image' => $data['image'], 'quantity' => $data['quantity']]);
     }
+
     /**
      * Name Product Parent
      *
@@ -73,9 +81,9 @@ class ProductService extends Service
     public function show($id)
     {
         $product = Product::query()
-        ->with('productVariations', 'productVariations.color', 'productVariations.size')
-        ->where('id', $id)
-        ->first();
+            ->with('productVariations', 'productVariations.color', 'productVariations.size')
+            ->where('id', $id)
+            ->first();
 
         return $product;
     }
@@ -88,7 +96,7 @@ class ProductService extends Service
     public function getProduct($id)
     {
         $product = Product::query()
-            ->select(['id', 'category_id', 'supplier_id',  'image', 'name', 'description', 'content', 'price', 'status'])
+            ->select(['id', 'category_id', 'supplier_id', 'image', 'name', 'description', 'content', 'price', 'status'])
             ->where('id', $id)
             ->first();
         if (!$product) {
@@ -106,7 +114,7 @@ class ProductService extends Service
     public function getProductDetail($id)
     {
         $product = ProductVariation::query()
-            ->select(['id', 'color_id', 'size_id',  'image', 'quantity'])
+            ->select(['id', 'color_id', 'size_id', 'image', 'quantity'])
             ->where('id', $id)
             ->first();
         if (!$product) {
@@ -115,6 +123,7 @@ class ProductService extends Service
 
         return $product;
     }
+
     /**
      * Update
      *
@@ -149,6 +158,7 @@ class ProductService extends Service
             $productvariation->update(['color_id' => $data['color_id'], 'size_id' => $data['size_id'], 'quantity' => $data['quantity']]);
         }
     }
+
     /**
      * Delete
      *
